@@ -17,4 +17,4 @@ CanToolApp主要是为了实现CAN数据的显示和控制，其主要的功能�
 > * 可以将所有CAN信息实时数据、CAN设定信息等通过WEB API方式更新到远程数据库；
 > * 功能可能随时增加或修改，需要做好变更管理。
                    -----By CYJ 10.08   01:32
-				   -----git1(modi CYJ 15:21,solve the problem of merging)
+				-----git1(modi CYJ 15:21,solve the problem of merging)
