@@ -3,8 +3,14 @@
 ------
 
 CanToolApp主要是为了实现CAN数据的显示和控制，其主要的功能需求分析如下：
+<<<<<<< HEAD
 > * 分析可能使用eclipse或Visual Studio进行开发
+=======
+
+
+>>>>>>> d61adb2ffd57ab1ec583e3aa21c4dfc2a69916cb
 > * 能够搜索到本机所有可使用的COM口，并在弹出式ComboBox中以列表方式让用户选择CanTool装置在上位机中映射的COM口；
+> * 使用eclipse或者Visual studio实现
 > * 能够通过命令行实现CANtool装置的CAN通信参数设置；
 > * 对接收到的多个CAN信息，进行解析和显示等；
 > * 显示时可以让用户选择仪表盘方式显示接收到CAN信号物理值。这些用户选择的显示方式可保存到CanToolApp设定文件中，供下次使用；
