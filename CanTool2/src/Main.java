@@ -28,12 +28,20 @@ import serialException.NotASerialPort;
 import serialException.PortInUse;
 import serialException.SerialPortParameterFailure;
 import serialPort.SerialTool;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 
 public class Main extends ApplicationWindow {
 	private Text text;
 	private Label lblNewLabel=null;
 	public SerialPort serialPort=null;
 	public static StringBuffer stringBuffer=new StringBuffer();
+	private Action action;
 	/**
 	 * Create the application window.
 	 */
@@ -70,7 +78,6 @@ public class Main extends ApplicationWindow {
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
-		
 		text = new Text(container, SWT.BORDER);
 		text.setBounds(0, 0, 172, 23);
 		
@@ -90,8 +97,6 @@ public class Main extends ApplicationWindow {
 						// TODO 自动生成的 catch 块
 						e1.printStackTrace();
 					}
-			        
-
 			}
 		});
 		btnInput.setBounds(210, 0, 80, 27);
@@ -113,18 +118,11 @@ public class Main extends ApplicationWindow {
             public void run() {
                 while(true){
                     try {
-                        //对Label进行实时刷新，需要加上这句
                     	lblNewLabel.getDisplay().asyncExec(new Runnable() {       
                          @Override
                          public void run() {
-                             // 设置时间 ，格式化输出时间
-                           /*  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                             String s = sdf.format(new Date());*/
                        if(SerialListener.receive_data!=null)
-                        		 
-                            		 lblNewLabel.setText(stringBuffer.toString());//输出到Label上        
-                        		 
-                        		    
+                            		 lblNewLabel.setText(stringBuffer.toString());//输出到Label上        		    
                          }
                      });
                      Thread.sleep(1000);//每隔一秒刷新一次
@@ -142,7 +140,19 @@ public class Main extends ApplicationWindow {
 	 */
 	private void createActions() {
 		// Create the actions
+		{
+			action = new Action("New Action") {
+			};
+			
+			action.addPropertyChangeListener(new IPropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent arg0) {
+				
+				}
+			});
+		}
 	}
+
+	
 
 	/**
 	 * Create the menu manager.
@@ -151,6 +161,17 @@ public class Main extends ApplicationWindow {
 	@Override
 	protected MenuManager createMenuManager() {
 		MenuManager menuManager = new MenuManager("menu");
+		
+		MenuManager menuManager_1 = new MenuManager("\u53C2\u6570\u8BBE\u7F6E");
+		AddParameter addParameter = new AddParameter();
+
+		addParameter.setToolTipText("\u8BBE\u7F6E\u4E32\u53E3\u53C2\u6570");
+		addParameter.setText("\u6253\u5F00\u8BBE\u7F6E\u7A97\u53E3");
+		menuManager_1.setVisible(true);
+		
+		menuManager.add(menuManager_1);
+		menuManager_1.add(addParameter);
+		
 		return menuManager;
 	}
 
@@ -196,7 +217,7 @@ public class Main extends ApplicationWindow {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("New Application");
+		newShell.setText("CanTool");
 	}
 
 	/**
