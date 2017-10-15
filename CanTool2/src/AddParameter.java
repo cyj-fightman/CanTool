@@ -1,12 +1,12 @@
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class AddParameter extends Action {
-	 public AddParameter() {
+	Shell parentShell;
+	 public AddParameter(Shell parentShell) {
 		 super();
+		 this.parentShell=parentShell;
 		 System.out.println("21 team");
 		 setText("打开(&O)");
 		 setToolTipText("保存文件");  
@@ -36,7 +36,10 @@ public class AddParameter extends Action {
 	@Override
 	public void run() {
 		// TODO 自动生成的方法存根
-		new SecondShell();
+//		new SecondShell();
+		setting s=new setting(parentShell);
+		
+		s.open();
 		 /*MessageBox messageBox = new MessageBox(null);
 	        messageBox.setMessage("Hello World!");
 	        messageBox.open();*/

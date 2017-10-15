@@ -39,9 +39,10 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 public class Main extends ApplicationWindow {
 	private Text text;
 	private Label lblNewLabel=null;
-	public SerialPort serialPort=null;
+	public static SerialPort serialPort=null;
 	public static StringBuffer stringBuffer=new StringBuffer();
 	private Action action;
+	public Shell shell;
 	/**
 	 * Create the application window.
 	 */
@@ -163,7 +164,7 @@ public class Main extends ApplicationWindow {
 		MenuManager menuManager = new MenuManager("menu");
 		
 		MenuManager menuManager_1 = new MenuManager("\u53C2\u6570\u8BBE\u7F6E");
-		AddParameter addParameter = new AddParameter();
+		AddParameter addParameter = new AddParameter(shell);
 
 		addParameter.setToolTipText("\u8BBE\u7F6E\u4E32\u53E3\u53C2\u6570");
 		addParameter.setText("\u6253\u5F00\u8BBE\u7F6E\u7A97\u53E3");
@@ -217,6 +218,7 @@ public class Main extends ApplicationWindow {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
+		shell=newShell;
 		newShell.setText("CanTool");
 	}
 
