@@ -1,20 +1,17 @@
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import gnu.io.SerialPort;
 import serialPort.SerialTool;
-
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class setting extends Dialog {
 	private Combo combo_1 ;
@@ -85,8 +82,9 @@ public class setting extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				try{
 					Main.serialPort.close();
+					  Main.serialPort.setSerialPortParams(Integer.parseInt(combo.getText().toString()), Integer.parseInt(combo_1.getText().toString()), Integer.parseInt(combo_2.getText().toString()), SerialPort.PARITY_NONE);
 					  Main.serialPort = SerialTool.openPort(combo_3.getText().toString(), Integer.parseInt(combo.getText().toString()));
-					 SerialTool.addListener(Main.serialPort, new SerialListener(Main.serialPort));
+					  SerialTool.addListener(Main.serialPort, new SerialListener(Main.serialPort));
 				 }catch(Exception ee){
 					 
 					 ee.printStackTrace();
