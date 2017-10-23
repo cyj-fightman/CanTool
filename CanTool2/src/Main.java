@@ -1,3 +1,4 @@
+import java.awt.Window;
 import java.util.List;
 import java.util.Map;
 
@@ -5,6 +6,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -13,6 +15,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -20,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -39,18 +44,23 @@ public class Main extends ApplicationWindow {
 	public static String receive_data=null;
 	private Action action;
 	public Shell shell;
-	public Map map;
+	public static read_database read_database2;
+	public static Map map;
 	private Text text_1;
+	public static Text text_2;
+	private Action action_1;
+	private Action action_2;
 	/**
 	 * Create the application window.
 	 */
 	public Main() {
 		super(null);
 		createActions();
+//		createActions();
 		addToolBar(SWT.FLAT | SWT.WRAP);
 		addMenuBar();
 		addStatusLine();
-		read_database read_database2=new read_database();
+		read_database2=new read_database();
 		 map =read_database2.analyze_database("database.txt");
 		 try{
 			  serialPort = SerialTool.openPort("COM3", 115200);
@@ -63,7 +73,27 @@ public class Main extends ApplicationWindow {
 		 }
 		 
 	}
-	
+	private void createActions() {
+		{
+			action_1 = new Action("\u5173\u4E8E") {
+			};
+		}
+		{
+			action_2 = new Action("\u5173\u4E8E") {				@Override
+				public void run() {
+					final Display display = Display.getDefault();
+					final Shell shell = new Shell();
+					shell.setLocation(Display.getDefault().getCursorLocation());
+					shell.setSize(200, 120);
+//					shell.setText("MessageBox 实例");
+					MessageDialog.openInformation(shell, null, "这个软件是由21组做的CanToolAPP，实现是基于Eclipse集成开发平台，使用java语言，并且利用了SWT/Jface插件。\r\n主要成员有:\r\n陈煌榕\r\n陈育健\r\n李俊\r\n袁琳琳");
+					
+					
+				}
+			};
+		}
+	}
+
 	public void set_label(){
 		if(lblNewLabel!=null){
     		lblNewLabel.setText(SerialListener.receive_data);
@@ -103,7 +133,7 @@ public class Main extends ApplicationWindow {
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+		Composite container = new Composite(parent, SWT.EMBEDDED);
 		text = new Text(container, SWT.BORDER);
 		text.setBounds(0, 0, 530, 25);	
 		Button btnInput = new Button(container, SWT.NONE);
@@ -125,33 +155,25 @@ public class Main extends ApplicationWindow {
 			}
 		});
 		btnInput.setBounds(536, -2, 80, 27);
-		btnInput.setText("send");
+		btnInput.setText("\u53D1\u9001\u6570\u636E");
 		
 		Label lblNewLabel_1 = new Label(container, SWT.NONE);
 		lblNewLabel_1.setBounds(0, 31, 80, 17);
 		lblNewLabel_1.setText("\u63A5\u6536\u5230\u7684\u5185\u5BB9\uFF1A");
 		
-		ScrolledComposite scrolledComposite = new ScrolledComposite(container, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setLayout(new FillLayout());
-		scrolledComposite.setBounds(0, 54, 665, 306);
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
-		scrolledComposite.setAlwaysShowScrollBars(true);
-		grpTextD = new Group(scrolledComposite, SWT.NONE|SWT.MULTI| SWT.WRAP);
-		grpTextD.setText("数据");
-		scrolledComposite.setMinSize(new Point(50,680));//面板的最小大小
-		scrolledComposite.setContent(grpTextD);
-		scrolledComposite.setToolTipText("can scroll");
-//				lblNewLabel = new Label(scrolledComposite, SWT.NONE);
-//				lblNewLabel.setSize(644, 285);
-//				lblNewLabel.setText("none");
-//				scrolledComposite.setContent(lblNewLabel);
+		Composite composite = new Composite(container, SWT.NONE);
+		composite.setBounds(0, 54, 665, 305);
+		
+		text_2 = new Text(composite, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		text_2.setBounds(0, 0, 665, 305);
+		
+		
 		new Thread() {//线程操作
             public void run() {
                 while(true){
                     try {
                     	//lblNewLabel.getDisplay().asyncExec(new Runnable() {
-                    	grpTextD.getDisplay().asyncExec(new Runnable() {
+                    	text_2.getDisplay().asyncExec(new Runnable() {
                          @Override
                          public void run() {
                        if(SerialListener.receive_data!=null){
@@ -179,8 +201,8 @@ public class Main extends ApplicationWindow {
 	                   			}
 	                		}
 	                   		String data_once="flag:"+flag+'\t'+"id:"+id+'\t'+"dlc:"+dlc+'\t'+"length:"+length+"\t"+"data:"+data;
-	                   		System.out.println(map.keySet().size());
 	                   		
+	                   		System.out.println(map.containsKey(id)+"");
 	                   		if(map.containsKey(id)){
 	                   			List<database_Dao> list = (List<database_Dao>) map.get(id);
 		                   		for(int i=0;i<list.size();i++){
@@ -198,7 +220,7 @@ public class Main extends ApplicationWindow {
 	                   		}
 //	                   		stringBuffer.append(data_once+'\n');
                             //lblNewLabel.setText(stringBuffer.toString());//输出到Label上
-	                   		grpTextD.setText(stringBuffer.toString());
+	                   		text_2.setText(stringBuffer.toString());
                             SerialListener.receive_data=null;
                        }
                          }
@@ -215,23 +237,6 @@ public class Main extends ApplicationWindow {
 		return container;
 	}
 
-	/**
-	 * Create the actions.
-	 */
-	private void createActions() {
-		// Create the actions
-		{
-			action = new Action("New Action") {
-			};
-			
-			action.addPropertyChangeListener(new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent arg0) {
-				
-				}
-			});
-		}
-	}
-
 	
 
 	/**
@@ -243,15 +248,25 @@ public class Main extends ApplicationWindow {
 		MenuManager menuManager = new MenuManager("menu");
 		
 		MenuManager menuManager_1 = new MenuManager("\u53C2\u6570\u8BBE\u7F6E");
-		AddParameter addParameter = new AddParameter(shell);
-
-		addParameter.setToolTipText("\u8BBE\u7F6E\u4E32\u53E3\u53C2\u6570");
-		addParameter.setText("\u6253\u5F00\u8BBE\u7F6E\u7A97\u53E3");
+		Setting_COM_parameter setting_com_parameter = new Setting_COM_parameter(shell);
+		Import_File import_file=new Import_File();
+		Output_File output_File=new Output_File();
+		output_File.setText("\u5BFC\u51FA\u6570\u636E");
+		import_file.setText("导入数据文件");
+		setting_com_parameter.setToolTipText("\u8BBE\u7F6E\u4E32\u53E3\u53C2\u6570");
+		setting_com_parameter.setText("\u8BBE\u7F6E\u53C2\u6570");
+		
+		
 		menuManager_1.setVisible(true);
+		MenuManager menuManager_2 = new MenuManager("New MenuManager");
+		menuManager_2.setMenuText("\u6587\u4EF6");
+		menuManager.add(menuManager_2);
+		menuManager_2.add(output_File);
+		menuManager_2.add(import_file);
 		
 		menuManager.add(menuManager_1);
-		menuManager_1.add(addParameter);
-		
+		menuManager_1.add(setting_com_parameter);
+		menuManager.add(action_2);
 		return menuManager;
 	}
 
@@ -259,21 +274,21 @@ public class Main extends ApplicationWindow {
 	 * Create the toolbar manager.
 	 * @return the toolbar manager
 	 */
-	@Override
-	protected ToolBarManager createToolBarManager(int style) {
-		ToolBarManager toolBarManager = new ToolBarManager(style);
-		return toolBarManager;
-	}
+//	@Override
+//	protected ToolBarManager createToolBarManager(int style) {
+//		ToolBarManager toolBarManager = new ToolBarManager(style);
+//		return toolBarManager;
+//	}
 
-	/**
-	 * Create the status line manager.
-	 * @return the status line manager
-	 */
-	@Override
-	protected StatusLineManager createStatusLineManager() {
-		StatusLineManager statusLineManager = new StatusLineManager();
-		return statusLineManager;
-	}
+//	/**
+//	 * Create the status line manager.
+//	 * @return the status line manager
+//	 */
+//	@Override
+//	protected StatusLineManager createStatusLineManager() {
+//		StatusLineManager statusLineManager = new StatusLineManager();
+//		return statusLineManager;
+//	}
 
 	/**
 	 * Launch the application.

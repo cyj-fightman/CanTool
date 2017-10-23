@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +63,66 @@ public class read_database extends database_Dao{
 	                }
 	            }
 	        }
+	        return map;
+	    }
+	
+	public Map analyze_database_by_String(String str) {
+		  Map<String,List<database_Dao>> map = new HashMap<String,List<database_Dao>>();
+		  List<database_Dao> list = new ArrayList<database_Dao>();
+		  StringBuffer stringBuffer =new StringBuffer();
+		  FileWriter fw;
+		try {
+			fw = new FileWriter("temp_database.txt");
+			fw.write(str);
+			fw.flush();
+			fw.close(); 
+		} catch (IOException e2) {
+			// TODO 自动生成的 catch 块
+			e2.printStackTrace();
+		}          
+	        File file = new File("temp_database.txt");
+	        BufferedReader reader = null;
+	        try {
+	            reader = new BufferedReader(new FileReader(file));
+	            String tempString = null;
+	            String mark=null;
+	            // 一次读入一行，直到读入null为文件结束
+	            while ((tempString = reader.readLine()) != null) {
+	                // 显示行号
+//	            	System.out.println(tempString);
+	            	if(tempString.length()!=0){
+	            		stringBuffer.append(tempString);
+	            		
+	            		if(String.valueOf(tempString.charAt(0))!=" "&&!String.valueOf(tempString.charAt(0)).equals(" ")){
+	            			mark=tempString.split(" ")[1];
+	            		}
+	            		else{
+//	            			System.out.println(tempString);
+	            			database_Dao database_Dao2=analyze_database_Dao(tempString);
+	            			list.add(database_Dao2);	
+//	            			System.out.println(list.size()+"");
+	            		}
+	            	}else{
+	            		
+	            		map.put(mark, list);
+	            		list=new ArrayList<database_Dao>();
+	            		mark=null;
+	            		
+	            	}
+	            	
+	            }
+	            reader.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } finally {
+	            if (reader != null) {
+	                try {
+	                    reader.close();
+	                } catch (IOException e1) {
+	                }
+	            }
+	        }
+	        System.out.println("import database success");
 	        return map;
 	    }
 	// SG_ CDU_HVACACMaxButtonStVD : 23|1@0+ (1,0) [0|1] ""  HVAC
