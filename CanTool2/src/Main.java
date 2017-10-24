@@ -261,7 +261,7 @@ public class Main extends ApplicationWindow {
 		                   			 float B=database_Dao2.getB();
 		                   			 String sign=database_Dao2.getSign();
 		                   			 float finalnum=Float.valueOf(toInt(subBytes(sequence_one,start_position,length1)))*A+B;
-		                   			 stringBuffer.append(signal_name+finalnum+"\n\r");
+		                   			 stringBuffer.append(signal_name+" : "+finalnum+"\n\r");
 //		                   			 System.out.println("signal_name:"+signal_name+"start_position:"+start_position+"length"+length1+"A:"+A+"B:"+B+"sign:"+sign);
 		                   		}
 	                   		}
