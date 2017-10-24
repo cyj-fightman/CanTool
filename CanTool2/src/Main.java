@@ -52,6 +52,7 @@ public class Main extends ApplicationWindow {
 	private Action action_1;
 	private Action action_2;
 	private static Text text_3;
+	public static StringBuffer sb=new StringBuffer();
 	/**
 	 * Create the application window.
 	 */
@@ -107,18 +108,16 @@ public class Main extends ApplicationWindow {
 	    return b;
 	}
 
-	public static int byteToInt2(byte[] b)
-	{
-		int mask=0xff;
-	    int temp=0;
-		int n=0;            
-	    for(int i=0;i<b.length;i++){
-	        n<<=8;                
-			temp=b[i]&mask;        
-	        n|=temp;            
-	      }      
-	  return n;  
-	}
+	public static int toInt(byte[] bi) {
+		int len = bi.length;
+		int sum = 0;
+		int tmp,  max = len - 1;
+		for (int i = 0; i < len; ++i) {
+		tmp = bi[i];
+		sum += tmp * Math.pow(2, max--);
+		}
+		return sum;
+		}
 	
 	public static byte[] subBytes(byte[] src, int begin, int count) {  
 	    byte[] bs = new byte[count];  
@@ -172,7 +171,7 @@ public class Main extends ApplicationWindow {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Test1 test1=new Test1();
+				Send_Values test1=new Send_Values();
 				test1.run();
 			}
 		});
@@ -195,23 +194,54 @@ public class Main extends ApplicationWindow {
 	                   		CAnalData cAnalData=new CAnalData(SerialListener.receive_data);
 	                   		cAnalData.computeData();
 	                   		char flag=cAnalData.getFLAG();
-	                   		String id=cAnalData.getID();
+	                   		String id=String.valueOf(Integer.parseInt(cAnalData.getID(),16));
 	                   		int dlc=cAnalData.getDLC();
 	                   		int length=cAnalData.getDATA().size();
 	                   		StringBuffer data=new StringBuffer();
 	                   		int index=0;
 	                   		for(int i=0;i<length;i++){
-	                   			byte[] temp=intToBytes2(Integer.valueOf(cAnalData.getDATA().get(i)[0]-48).intValue());
-	                   			for(int j =0;j<4;j++){
-	                   				sequence_one[index]=temp[j];
-	                   				index++;
+	                   			byte[] temp=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[0])).intValue()).getBytes();
+	                   			byte[] temp1=new byte[4];
+	                   			for(int ii=0;ii<4;ii++){
+	                   				temp1[ii] = 0;
 	                   			}
-	                   			byte[] temp1=intToBytes2(Integer.valueOf(cAnalData.getDATA().get(i)[1]-48).intValue());
+	                   			
+	                   			for(int k=0;k<temp.length;k++){
+	                   				temp[k]=(byte) (temp[k]-48);
+	                   			}
+	                   			int jj=3;
+	                   			int len=temp.length;
+	                   			while((len-1)>=0){
+	                   				temp1[jj]=temp[len-1];
+	                   				len--;
+	                   				jj--;
+	                   			}
+	                   					
 	                   			for(int j =0;j<4;j++){
 	                   				sequence_one[index]=temp1[j];
 	                   				index++;
 	                   			}
+	                   			byte[] temp2=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[1])).intValue()).getBytes();
+	                   			byte[] temp3=new byte[4];
+	                   			for(int ii=0;ii<4;ii++){
+	                   				temp3[ii] = 0;
+	                   			}
+	                   			for(int k=0;k<temp2.length;k++){
+	                   				temp2[k]=(byte) (temp2[k]-48);
+	                   			}
+	                   			int jjj=3;
+	                   			int len1=temp2.length;
+	                   			while((len1-1)>=0){
+	                   				temp3[jjj]=temp2[len1-1];
+	                   				len1--;
+	                   				jjj--;
+	                   			}
+	                   			for(int j =0;j<4;j++){
+	                   				sequence_one[index]=temp3[j];
+	                   				index++;
+	                   			}
 	                		}
+	                   		
 	                   		String data_once="flag:"+flag+'\t'+"id:"+id+'\t'+"dlc:"+dlc+'\t'+"length:"+length+"\t"+"data:"+data;
 	                   		
 	                   		System.out.println(map.containsKey(id)+"");
@@ -225,7 +255,7 @@ public class Main extends ApplicationWindow {
 		                   			 float A=database_Dao2.getA();
 		                   			 float B=database_Dao2.getB();
 		                   			 String sign=database_Dao2.getSign();
-		                   			 float finalnum=Float.valueOf(byteToInt2(subBytes(sequence_one,start_position,length1)));
+		                   			 float finalnum=Float.valueOf(toInt(subBytes(sequence_one,start_position,length1)))*A+B;
 		                   			 stringBuffer.append(signal_name+finalnum+"\n\r");
 //		                   			 System.out.println("signal_name:"+signal_name+"start_position:"+start_position+"length"+length1+"A:"+A+"B:"+B+"sign:"+sign);
 		                   		}

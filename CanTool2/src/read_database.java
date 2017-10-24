@@ -183,8 +183,8 @@ public class read_database extends database_Dao{
 	 public database_Dao analyze_database_Dao(String str){
 		 String[] split_str=str.trim().split(" ");
 		 String signal_name=split_str[1];
-		 int start_position=Integer.valueOf(split_str[3].split("|")[0]).intValue();
-		 int length=Integer.valueOf(split_str[3].split("|")[0].split("@")[0]).intValue();
+		 int start_position=Integer.valueOf(split_str[3].split("\\|")[0]).intValue();
+		 int length=Integer.valueOf(split_str[3].split("\\|")[1].split("@")[0]).intValue();
 		 float A=Float.valueOf(split_str[4].substring(1, split_str[4].length()-1).split(",")[0]);
 		 float B=Float.valueOf(split_str[4].substring(1, split_str[4].length()-1).split(",")[1]);
 		 String sign=split_str[6];
