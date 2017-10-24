@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -29,13 +30,28 @@ import org.eclipse.swt.widgets.TreeItem;
 public class Send_Values extends AbstractExample{
     private Table table;
     private Tree tree;
+    public static String final_reault="T";
     public Send_Values() {
 		shell.addShellListener(new ShellAdapter() {
 			@Override
 			public void shellClosed(ShellEvent e) {
+				byte[] send_bytes=new byte[64];
+				
+				for(int i=0;i<64;i++){
+					send_bytes[i]=0;
+				}
+				System.out.println(String.valueOf(send_bytes));
 				String map_name=tree.getSelection()[0].getText().toString();
 				String id=read_database.DLC_id.get(map_name);
+					
 				List<database_Dao> list = (List<database_Dao>) Main.map.get(id);
+				String num=Integer.toHexString(Integer.valueOf(id));
+				if(num.length()<8){
+					for(int l=num.length();l<8;l++){
+						num='0'+num;
+					}
+				}
+				final_reault=final_reault+num+"8";
 				for(int i=0;i<list.size();i++){
           			 database_Dao database_Dao2=list.get(i);
           			 String signal_name=database_Dao2.getSignal_name();
@@ -44,18 +60,82 @@ public class Send_Values extends AbstractExample{
           			 float A=database_Dao2.getA();
           			 float B=database_Dao2.getB();
           			 String sign=database_Dao2.getSign();
+          			 int value=Integer.valueOf((int) ((Float.valueOf(table.getItem(i).getText(1))-B)/A));
+          			String binaryStr = java.lang.Integer.toBinaryString(value); 
+        	        try {
+        	        	byte final_results[]=new byte[length1];
+        	        	
+						byte results[] = binaryStr.getBytes("utf8");
+//						for(int p=0;p<results.length;p++){
+//							System.out.println(results[p]);
+//						}
+						int len=results.length;
+						int index=length1-1;
+						while(len-1>=0){
+							final_results[index]=results[len-1];
+							len--;
+							index--;
+						}
+						index=0;
+						for(int j=start_position;j<length1+start_position;j++){
+							send_bytes[j]=final_results[index];
+							index++;
+						}
+						
+						
+					} catch (UnsupportedEncodingException e1) {
+						shell.close();
+						System.out.println("shell close");
+						// TODO 自动生成的 catch 块
+						e1.printStackTrace();
+					}  
+        	        
+//        	        String t = new String(send_bytes);
+//        	        System.out.println(t);
 //          			 float finalnum=Float.valueOf(byteToInt2(subBytes(sequence_one,start_position,length1)));
 //          			 Main.sb.append(signal_name+finalnum+"\n\r");
 //          			 System.out.println("signal_name:"+signal_name+"start_position:"+start_position+"length"+length1+"A:"+A+"B:"+B+"sign:"+sign);
           		}
-				
-				for(int i=0;i<table.getItemCount();i++){
-				
-//					System.out.println(table.getItem(i).getText(1).toString());
+				for(int pt=0;pt<send_bytes.length;pt++){
+    	        	if(send_bytes[pt]>=48){
+    	        		send_bytes[pt]=(byte) (send_bytes[pt]-48);
+    	        	}
+//    	        	System.out.println(send_bytes[pt]);
+    	        }
+				int mark_place=0;
+				for(int pt=0;pt<send_bytes.length;pt++){
+    	        	if((pt+1)%4==0){
+    	        		byte[] subB=subBytes(send_bytes, mark_place, 4);
+//    	        		for(int jj=0;jj<subB.length;jj++){
+//    	        			System.out.println(subB[jj]);
+//    	        		}
+    	        		final_reault=final_reault+Integer.toHexString(toInt(subB));
+    	        		mark_place=pt+1;
+    	        	}
 				}
+				System.out.println(final_reault);
+				Main.smart_send_data=final_reault;
+				
 			}
 		});
     }
+    
+    public static byte[] subBytes(byte[] src, int begin, int count) {  
+	    byte[] bs = new byte[count];  
+	    System.arraycopy(src, begin, bs, 0, count);  
+	    return bs;  
+	} 
+    
+    public static int toInt(byte[] bi) {
+		int len = bi.length;
+		int sum = 0;
+		int tmp,  max = len - 1;
+		for (int i = 0; i < len; ++i) {
+		tmp = bi[i];
+		sum += tmp * Math.pow(2, max--);
+		}
+		return sum;
+		}
     public void todo(Shell shell) {
         TabFolder tabFolder = new TabFolder(shell,SWT.BORDER);
         
@@ -100,9 +180,22 @@ public class Send_Values extends AbstractExample{
                 	int list_size=read_database.name_map.get(tree.getSelection()[0].getText().toString()).size();
                 	List list=read_database.name_map.get(tree.getSelection()[0].getText().toString());
                 	for(int i=0;i<list_size;i++){
+		
+                		
+                		
                 		TableItem item = new TableItem(table,SWT.NONE);
                 		database_Dao database_dao=(database_Dao) list.get(i);
-                        item.setText(new String[]{database_dao.getSignal_name(),"0.0"});
+                		if(database_dao.getSignal_name().equals("CDU_HVAC_DriverTempSelect")||database_dao.getSignal_name().equals("HVAC_PsnTempSelect")
+                				||database_dao.getSignal_name().equals("HVAC_PsnTempSelect")||database_dao.getSignal_name().equals("HVAC_TempSelect")){
+                				item.setText(new String[]{database_dao.getSignal_name(),"19.0"});
+                		}else if(database_dao.getSignal_name().equals("BCM_KeySt")){
+                			item.setText(new String[]{database_dao.getSignal_name(),"1"});
+                		}else if(database_dao.getSignal_name().equals("HVAC_Checksum")){
+                			item.setText(new String[]{database_dao.getSignal_name(),"155.0"});
+                		}
+                		else{
+                				item.setText(new String[]{database_dao.getSignal_name(),"0.0"});
+                		}
                 	}
 
                 	
