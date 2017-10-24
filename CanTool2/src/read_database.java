@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class read_database extends database_Dao{
-	
+	public static Map<String,List<database_Dao>> name_map = new HashMap<String,List<database_Dao>>();
+	public static Map<String,List<String>> DLC_map = new HashMap<String,List<String>>();
+	public static Map<String,String> DLC_id=new HashMap<String,String>();
+	public static List<String> name_list=new ArrayList<String>();
 	  public read_database(String signal_name, int start_position, int length, float a, float b, String sign) {
 		super(signal_name, start_position, length, a, b, sign);
 		// TODO 自动生成的构造函数存根
@@ -18,8 +21,11 @@ public class read_database extends database_Dao{
 		// TODO 自动生成的构造函数存根
 	}
 	public Map analyze_database(String fileName) {
+		 name_list=new ArrayList<String>();
 		  Map<String,List<database_Dao>> map = new HashMap<String,List<database_Dao>>();
 		  List<database_Dao> list = new ArrayList<database_Dao>();
+		  List<database_Dao> list2 = new ArrayList<database_Dao>();
+		  List<String> list3=new ArrayList<String>();
 		  StringBuffer stringBuffer =new StringBuffer();
 	        File file = new File(fileName);
 	        BufferedReader reader = null;
@@ -27,6 +33,8 @@ public class read_database extends database_Dao{
 	            reader = new BufferedReader(new FileReader(file));
 	            String tempString = null;
 	            String mark=null;
+	            String mark_name=null;
+	            String DLC=null;
 	            // 一次读入一行，直到读入null为文件结束
 	            while ((tempString = reader.readLine()) != null) {
 	                // 显示行号
@@ -36,22 +44,42 @@ public class read_database extends database_Dao{
 	            		
 	            		if(String.valueOf(tempString.charAt(0))!=" "&&!String.valueOf(tempString.charAt(0)).equals(" ")){
 	            			mark=tempString.split(" ")[1];
+	            			mark_name=tempString.split(" ")[2].split(":")[0].trim();
+	            			DLC=tempString.split(" ")[3].trim();
+	            			name_list.add(mark_name);
 	            		}
 	            		else{
+	            			
 //	            			System.out.println(tempString);
 	            			database_Dao database_Dao2=analyze_database_Dao(tempString);
 	            			list.add(database_Dao2);	
+	            			list2.add(database_Dao2);
+	            			list3.add(DLC);
 //	            			System.out.println(list.size()+"");
 	            		}
 	            	}else{
-	            		
+	            		DLC_id.put(mark_name, mark);
+	            		name_map.put(mark_name, list2);
 	            		map.put(mark, list);
+	            		DLC_map.put(mark_name, list3);
+	            		list2=new ArrayList<database_Dao>();
 	            		list=new ArrayList<database_Dao>();
+	            		list3=new ArrayList<String>();;
 	            		mark=null;
-	            		
+	            		mark_name=null;
 	            	}
 	            	
 	            }
+	            DLC_id.put(mark_name, mark);
+	            name_map.put(mark_name, list2);
+        		map.put(mark, list);
+        		DLC_map.put(mark_name, list3);
+        		list2=new ArrayList<database_Dao>();
+        		list=new ArrayList<database_Dao>();
+        		list3=new ArrayList<String>();;
+        		mark=null;
+        		mark_name=null;
+	            
 	            reader.close();
 	        } catch (IOException e) {
 	            e.printStackTrace();
@@ -67,8 +95,11 @@ public class read_database extends database_Dao{
 	    }
 	
 	public Map analyze_database_by_String(String str) {
+		 name_list=new ArrayList<String>();
 		  Map<String,List<database_Dao>> map = new HashMap<String,List<database_Dao>>();
 		  List<database_Dao> list = new ArrayList<database_Dao>();
+		  List<database_Dao> list2 = new ArrayList<database_Dao>();
+		  List<String> list3=new ArrayList<String>();
 		  StringBuffer stringBuffer =new StringBuffer();
 		  FileWriter fw;
 		try {
@@ -86,6 +117,8 @@ public class read_database extends database_Dao{
 	            reader = new BufferedReader(new FileReader(file));
 	            String tempString = null;
 	            String mark=null;
+	            String mark_name=null;
+	            String DLC=null;
 	            // 一次读入一行，直到读入null为文件结束
 	            while ((tempString = reader.readLine()) != null) {
 	                // 显示行号
@@ -95,22 +128,43 @@ public class read_database extends database_Dao{
 	            		
 	            		if(String.valueOf(tempString.charAt(0))!=" "&&!String.valueOf(tempString.charAt(0)).equals(" ")){
 	            			mark=tempString.split(" ")[1];
+	            			mark_name=tempString.split(" ")[2].split(":")[0].trim();
+	            			DLC=tempString.split(" ")[3].trim();
+	            			name_list.add(mark_name);
 	            		}
 	            		else{
 //	            			System.out.println(tempString);
 	            			database_Dao database_Dao2=analyze_database_Dao(tempString);
 	            			list.add(database_Dao2);	
+	            			list2.add(database_Dao2);
+	            			list3.add(DLC);
 //	            			System.out.println(list.size()+"");
 	            		}
 	            	}else{
-	            		
+	            		DLC_id.put(mark_name, mark);
+	            		name_map.put(mark_name, list2);
 	            		map.put(mark, list);
+	            		DLC_map.put(mark_name, list3);
+	            		list2=new ArrayList<database_Dao>();
 	            		list=new ArrayList<database_Dao>();
+	            		list3=new ArrayList<String>();;
 	            		mark=null;
+	            		mark_name=null;
+	            		DLC=null;
 	            		
 	            	}
 	            	
 	            }
+	            DLC_id.put(mark_name, mark);
+	            name_map.put(mark_name, list2);
+        		map.put(mark, list);
+        		DLC_map.put(mark_name, list3);
+        		list2=new ArrayList<database_Dao>();
+        		list=new ArrayList<database_Dao>();
+        		list3=new ArrayList<String>();;
+        		mark=null;
+        		mark_name=null;
+        		DLC=null;
 	            reader.close();
 	        } catch (IOException e) {
 	            e.printStackTrace();

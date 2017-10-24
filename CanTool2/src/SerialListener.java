@@ -51,8 +51,9 @@ public class SerialListener implements SerialPortEventListener {
                     	System.out.println(serialPort.toString());
                         data = SerialTool.readFromPort(serialPort);    //读取数据，存入字节数组
                         receive_data=new String(data,"UTF-8");
-                        Main.receive_data=receive_data;
-                        System.out.println(receive_data);
+//                        Main.receive_data=receive_data;
+//                        
+//                        System.out.println(receive_data);
                         //System.out.println(new String(data));
 //                        JOptionPane.showInputDialog(new String(data));
                         //String dataOriginal = new String(data);    //将字节数组数据转换位为保存了原始数据的字符串

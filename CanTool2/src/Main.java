@@ -42,6 +42,7 @@ public class Main extends ApplicationWindow {
 	public static SerialPort serialPort=null;
 	public static StringBuffer stringBuffer=new StringBuffer();
 	public static String receive_data=null;
+	public static StringBuffer receive_data_buffer=new StringBuffer();
 	private Action action;
 	public Shell shell;
 	public static read_database read_database2;
@@ -50,6 +51,7 @@ public class Main extends ApplicationWindow {
 	public static Text text_2;
 	private Action action_1;
 	private Action action_2;
+	private static Text text_3;
 	/**
 	 * Create the application window.
 	 */
@@ -94,11 +96,7 @@ public class Main extends ApplicationWindow {
 		}
 	}
 
-	public void set_label(){
-		if(lblNewLabel!=null){
-    		lblNewLabel.setText(SerialListener.receive_data);
-    	}
-	}
+	
 	
 	public static byte[] intToBytes2(int n){
 	    byte[] b = new byte[4];
@@ -154,7 +152,7 @@ public class Main extends ApplicationWindow {
 					}
 			}
 		});
-		btnInput.setBounds(536, -2, 80, 27);
+		btnInput.setBounds(536, -2, 60, 27);
 		btnInput.setText("\u53D1\u9001\u6570\u636E");
 		
 		Label lblNewLabel_1 = new Label(container, SWT.NONE);
@@ -165,7 +163,21 @@ public class Main extends ApplicationWindow {
 		composite.setBounds(0, 54, 665, 305);
 		
 		text_2 = new Text(composite, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-		text_2.setBounds(0, 0, 665, 305);
+		text_2.setBounds(271, 0, 394, 305);
+		
+		text_3 = new Text(composite, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		text_3.setBounds(0, 0, 272, 305);
+		
+		Button btnNewButton = new Button(container, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Test1 test1=new Test1();
+				test1.run();
+			}
+		});
+		btnNewButton.setBounds(600, 0, 65, 25);
+		btnNewButton.setText("\u667A\u80FD\u53D1\u9001");
 		
 		
 		new Thread() {//线程操作
@@ -177,10 +189,10 @@ public class Main extends ApplicationWindow {
                          @Override
                          public void run() {
                        if(SerialListener.receive_data!=null){
-                    	   
+                    	   receive_data_buffer.append(SerialListener.receive_data+"\r\n");
 //                    	   String str="t12380011121314151617\t";
                     	   	byte[] sequence_one=new byte[64];//用于存储data的byte[]
-	                   		CAnalData cAnalData=new CAnalData(receive_data);
+	                   		CAnalData cAnalData=new CAnalData(SerialListener.receive_data);
 	                   		cAnalData.computeData();
 	                   		char flag=cAnalData.getFLAG();
 	                   		String id=cAnalData.getID();
@@ -220,6 +232,7 @@ public class Main extends ApplicationWindow {
 	                   		}
 //	                   		stringBuffer.append(data_once+'\n');
                             //lblNewLabel.setText(stringBuffer.toString());//输出到Label上
+	                   		text_3.setText(receive_data_buffer.toString());
 	                   		text_2.setText(stringBuffer.toString());
                             SerialListener.receive_data=null;
                        }
@@ -228,7 +241,18 @@ public class Main extends ApplicationWindow {
                      Thread.sleep(1000);//每隔一秒刷新一次
                  } catch (Exception e) {
                  }
-
+                    try {
+                    	text_3.getDisplay().asyncExec(new Runnable() {
+                    		public void run() {
+                    			
+                    			
+                    		};
+                    	});
+                    	Thread.sleep(1000);//每隔一秒刷新一次
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+                    			
                 }
             }
      }.start();
