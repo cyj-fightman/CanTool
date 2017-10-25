@@ -70,7 +70,6 @@ public class Main extends ApplicationWindow {
 			  serialPort = SerialTool.openPort("COM3", 115200);
 			 SerialTool.addListener(serialPort, new SerialListener(serialPort));
 		 }catch(Exception e){
-			 
 			 e.printStackTrace();
 		 }finally{
 			 
@@ -373,6 +372,13 @@ public class Main extends ApplicationWindow {
 		super.configureShell(newShell);
 		shell=newShell;
 		newShell.setText("CanTool");
+		shell.addShellListener(new ShellAdapter() {
+			@Override
+			public void shellClosed(ShellEvent e) {
+				Display.getDefault().dispose();  
+		        System.exit(0); 
+			}
+		});
 	}
 
 	/**
