@@ -116,7 +116,7 @@ public class Send_Values extends AbstractExample{
 					}
 					System.out.println(final_reault);
 					Main.smart_send_data=final_reault;
-					
+					shell.dispose();
 				}catch(Exception ee){
 					Main.smart_send_data="数据设置错误，请设置值并且值在数据库给定区间内";
 					shell.dispose();

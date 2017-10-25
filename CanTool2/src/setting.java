@@ -1,5 +1,6 @@
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -12,6 +13,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import gnu.io.SerialPort;
@@ -125,6 +127,19 @@ public class setting extends Dialog {
 				 getShell().close();
 				 
 			} catch (Exception e) {
+//				MessageDialog.openConfirm(getShell(),"标题","端口不存在或者设置错误，请重新设置");
+//				boolean b = MessageDialog.openConfirm(getShell(),"标题","端口不存在或者设置错误，请重新设置");
+//				if(b){
+//					System.out.println("port error and press yes");
+////					getShell().close();
+//					}
+//				else{
+//					System.out.println("port error and press no");
+//				}
+				MessageBox messageBox = new MessageBox(getShell());
+		        messageBox.setMessage("端口不存在或者设置错误，请重新设置");
+		        messageBox.open();
+				
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
 			} 
