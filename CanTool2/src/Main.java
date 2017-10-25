@@ -67,7 +67,8 @@ public class Main extends ApplicationWindow {
 		read_database2=new read_database();
 		 map =read_database2.analyze_database("database.txt");
 		 try{
-			  serialPort = SerialTool.openPort("COM3", 115200);
+			  serialPort = SerialTool.openPort("COM4", 9600);
+			  serialPort.setSerialPortParams(Integer.parseInt("9600"), Integer.parseInt("8"), Integer.parseInt("1"), SerialPort.PARITY_NONE);
 			 SerialTool.addListener(serialPort, new SerialListener(serialPort));
 		 }catch(Exception e){
 			 e.printStackTrace();
@@ -182,106 +183,140 @@ public class Main extends ApplicationWindow {
 		new Thread() {//线程操作
             public void run() {
                 while(true){
-                    try {
-                    	//lblNewLabel.getDisplay().asyncExec(new Runnable() {
-                    	text_2.getDisplay().asyncExec(new Runnable() {
-                         @Override
-                         public void run() {
-                        	 if(smart_send_data!=null){
-                        		 text.setText(smart_send_data);
-                        		 smart_send_data=null;
-                        	 }
-                       if(SerialListener.receive_data!=null){
-                    	   receive_data_buffer.append(SerialListener.receive_data+"\r\n");
-//                    	   String str="t12380011121314151617\t";
-                    	   	byte[] sequence_one=new byte[64];//用于存储data的byte[]
-	                   		CAnalData cAnalData=new CAnalData(SerialListener.receive_data);
-	                   		cAnalData.computeData();
-	                   		char flag=cAnalData.getFLAG();
-	                   		String id=String.valueOf(Integer.parseInt(cAnalData.getID(),16));
-	                   		int dlc=cAnalData.getDLC();
-	                   		int length=cAnalData.getDATA().size();
-	                   		StringBuffer data=new StringBuffer();
-	                   		int index=0;
-	                   		for(int i=0;i<length;i++){
-	                   			byte[] temp=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[0])).intValue()).getBytes();
-	                   			byte[] temp1=new byte[4];
-	                   			for(int ii=0;ii<4;ii++){
-	                   				temp1[ii] = 0;
-	                   			}
-	                   			
-	                   			for(int k=0;k<temp.length;k++){
-	                   				temp[k]=(byte) (temp[k]-48);
-	                   			}
-	                   			int jj=3;
-	                   			int len=temp.length;
-	                   			while((len-1)>=0){
-	                   				temp1[jj]=temp[len-1];
-	                   				len--;
-	                   				jj--;
-	                   			}
-	                   					
-	                   			for(int j =0;j<4;j++){
-	                   				sequence_one[index]=temp1[j];
-	                   				index++;
-	                   			}
-	                   			byte[] temp2=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[1])).intValue()).getBytes();
-	                   			byte[] temp3=new byte[4];
-	                   			for(int ii=0;ii<4;ii++){
-	                   				temp3[ii] = 0;
-	                   			}
-	                   			for(int k=0;k<temp2.length;k++){
-	                   				temp2[k]=(byte) (temp2[k]-48);
-	                   			}
-	                   			int jjj=3;
-	                   			int len1=temp2.length;
-	                   			while((len1-1)>=0){
-	                   				temp3[jjj]=temp2[len1-1];
-	                   				len1--;
-	                   				jjj--;
-	                   			}
-	                   			for(int j =0;j<4;j++){
-	                   				sequence_one[index]=temp3[j];
-	                   				index++;
-	                   			}
-	                		}
-	                   		
-	                   		String data_once="flag:"+flag+'\t'+"id:"+id+'\t'+"dlc:"+dlc+'\t'+"length:"+length+"\t"+"data:"+data;
-	                   		
-	                   		System.out.println(map.containsKey(id)+"");
-	                   		if(map.containsKey(id)){
-	                   			List<database_Dao> list = (List<database_Dao>) map.get(id);
-		                   		for(int i=0;i<list.size();i++){
-		                   			 database_Dao database_Dao2=list.get(i);
-		                   			 String signal_name=database_Dao2.getSignal_name();
-		                   			 int start_position=database_Dao2.getStart_position();
-		                   			 int length1=database_Dao2.getLength();
-		                   			 float A=database_Dao2.getA();
-		                   			 float B=database_Dao2.getB();
-		                   			 String sign=database_Dao2.getSign();
-		                   			 float finalnum=Float.valueOf(toInt(subBytes(sequence_one,start_position,length1)))*A+B;
-		                   			 stringBuffer.append(signal_name+" : "+finalnum+"\n\r");
-//		                   			 System.out.println("signal_name:"+signal_name+"start_position:"+start_position+"length"+length1+"A:"+A+"B:"+B+"sign:"+sign);
-		                   		}
-	                   		}
-//	                   		stringBuffer.append(data_once+'\n');
-                            //lblNewLabel.setText(stringBuffer.toString());//输出到Label上
-	                   		text_3.setText(receive_data_buffer.toString());
-	                   		text_2.setText(stringBuffer.toString());
-                            SerialListener.receive_data=null;
-                       }
-                         }
-                     });
-                     Thread.sleep(1000);//每隔一秒刷新一次
-                 } catch (Exception e) {
-                 }
-                    try {
-                    	text_3.getDisplay().asyncExec(new Runnable() {
+                
+                
+            	text_2.getDisplay().asyncExec(new Runnable() {
+            		public void run() {
+            			if(smart_send_data!=null){
+                      		 text.setText(smart_send_data);
+                      		 smart_send_data=null;
+                      	 }
+            		};
+            	});
+            	
+                
+                	char[] data=null;
+                		if(SerialListener.receive_data!=null){
+                			data=SerialListener.receive_data.toCharArray();
+                		}
+                	
+                
+                	if(SerialListener.receive_data==null){
+                		
+                	}
+                	else if((data[0]=='t'||data[0]=='T'))
+                	{     
+                		try {
+			                    	//lblNewLabel.getDisplay().asyncExec(new Runnable() {
+			                    	text_2.getDisplay().asyncExec(new Runnable() {
+			                         @Override
+			                         public void run() {
+			                        	 if(smart_send_data!=null){
+			                        		 text.setText(smart_send_data);
+			                        		 smart_send_data=null;
+			                        	 }
+			                       if(SerialListener.receive_data!=null){
+			                    	   receive_data_buffer.append(SerialListener.receive_data+"\r\n");
+			//                    	   String str="t12380011121314151617\t";
+			                    	   	byte[] sequence_one=new byte[64];//用于存储data的byte[]
+				                   		CAnalData cAnalData=new CAnalData(SerialListener.receive_data);
+				                   		cAnalData.computeData();
+				                   		char flag=cAnalData.getFLAG();
+				                   		String id=String.valueOf(Integer.parseInt(cAnalData.getID(),16));
+				                   		int dlc=cAnalData.getDLC();
+				                   		int length=cAnalData.getDATA().size();
+				                   		StringBuffer data=new StringBuffer();
+				                   		int index=0;
+				                   		for(int i=0;i<length;i++){
+				                   			byte[] temp=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[0])).intValue()).getBytes();
+				                   			byte[] temp1=new byte[4];
+				                   			for(int ii=0;ii<4;ii++){
+				                   				temp1[ii] = 0;
+				                   			}
+				                   			
+				                   			for(int k=0;k<temp.length;k++){
+				                   				temp[k]=(byte) (temp[k]-48);
+				                   			}
+				                   			int jj=3;
+				                   			int len=temp.length;
+				                   			while((len-1)>=0){
+				                   				temp1[jj]=temp[len-1];
+				                   				len--;
+				                   				jj--;
+				                   			}
+				                   					
+				                   			for(int j =0;j<4;j++){
+				                   				sequence_one[index]=temp1[j];
+				                   				index++;
+				                   			}
+				                   			byte[] temp2=Integer.toBinaryString(Integer.valueOf(String.valueOf(cAnalData.getDATA().get(i)[1])).intValue()).getBytes();
+				                   			byte[] temp3=new byte[4];
+				                   			for(int ii=0;ii<4;ii++){
+				                   				temp3[ii] = 0;
+				                   			}
+				                   			for(int k=0;k<temp2.length;k++){
+				                   				temp2[k]=(byte) (temp2[k]-48);
+				                   			}
+				                   			int jjj=3;
+				                   			int len1=temp2.length;
+				                   			while((len1-1)>=0){
+				                   				temp3[jjj]=temp2[len1-1];
+				                   				len1--;
+				                   				jjj--;
+				                   			}
+				                   			for(int j =0;j<4;j++){
+				                   				sequence_one[index]=temp3[j];
+				                   				index++;
+				                   			}
+				                		}
+				                   		
+				                   		String data_once="flag:"+flag+'\t'+"id:"+id+'\t'+"dlc:"+dlc+'\t'+"length:"+length+"\t"+"data:"+data;
+				                   		
+				                   		System.out.println(map.containsKey(id)+"");
+				                   		if(map.containsKey(id)){
+				                   			List<database_Dao> list = (List<database_Dao>) map.get(id);
+					                   		for(int i=0;i<list.size();i++){
+					                   			 database_Dao database_Dao2=list.get(i);
+					                   			 String signal_name=database_Dao2.getSignal_name();
+					                   			 int start_position=database_Dao2.getStart_position();
+					                   			 int length1=database_Dao2.getLength();
+					                   			 float A=database_Dao2.getA();
+					                   			 float B=database_Dao2.getB();
+					                   			 String sign=database_Dao2.getSign();
+					                   			 float finalnum=Float.valueOf(toInt(subBytes(sequence_one,start_position,length1)))*A+B;
+					                   			 stringBuffer.append(signal_name+" : "+finalnum+"\n\r");
+			//		                   			 System.out.println("signal_name:"+signal_name+"start_position:"+start_position+"length"+length1+"A:"+A+"B:"+B+"sign:"+sign);
+					                   		}
+				                   		}
+			//	                   		stringBuffer.append(data_once+'\n');
+			                            //lblNewLabel.setText(stringBuffer.toString());//输出到Label上
+				                   		text_3.setText(receive_data_buffer.toString());
+				                   		text_2.setText(stringBuffer.toString());
+			                            SerialListener.receive_data=null;
+			                       }
+			                         }
+			                     });
+			                     Thread.sleep(1000);//每隔一秒刷新一次
+			                 } catch (Exception e) {
+			                	text_3.setText( SerialListener.receive_data);
+			                	System.out.println("fu");
+			                  	SerialListener.receive_data=null;
+			                	 e.printStackTrace();
+			                	 
+			                 }
+                	}else{
+                		text_3.getDisplay().asyncExec(new Runnable() {
                     		public void run() {
-                    			
-                    			
+                    			receive_data_buffer.append(SerialListener.receive_data+"\r\n");
+                        		text_3.setText(receive_data_buffer.toString());
+        	                  	SerialListener.receive_data=null;
                     		};
                     	});
+                		
+                	}
+                    try {
+                    	
+//                    	
                     	Thread.sleep(1000);//每隔一秒刷新一次
 					} catch (Exception e) {
 						// TODO: handle exception

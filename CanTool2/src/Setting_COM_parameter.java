@@ -39,11 +39,8 @@ public class Setting_COM_parameter extends Action {
 //		new SecondShell();
 		setting s=new setting(null);
 		
-		int message=s.open();
-		if(message==SWT.YES){
-			System.out.println("");
-			s.close();
-		}
+		s.open();
+		
 		 /*MessageBox messageBox = new MessageBox(null);
 	        messageBox.setMessage("Hello World!");
 	        messageBox.open();*/

@@ -95,7 +95,7 @@ public class setting extends Dialog {
 		combo_3 = new Combo(container, SWT.NONE);
 		combo_3.setTouchEnabled(true);
 		combo_3.setBounds(83, 117, 64, 25);
-		combo_3.setItems(new String[] {"COM2", "COM3"});
+		combo_3.setItems(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10"});
 		combo_3.setBounds(106, 131, 88, 25);
 		combo_3.select(1);
 //		return container;
@@ -112,12 +112,18 @@ public class setting extends Dialog {
 	@Override
 	protected void buttonPressed(int buttonId) {
 		 if (buttonId == IDialogConstants.OK_ID){
-			 Main.serialPort.close();
+			 if(Main.serialPort!=null){
+				 Main.serialPort.close();
+			 }
 			  System.out.println("serial close");
 			  try {
-				Main.serialPort.setSerialPortParams(Integer.parseInt(combo.getText().toString()), Integer.parseInt(combo_1.getText().toString()), Integer.parseInt(combo_2.getText().toString()), SerialPort.PARITY_NONE);
+				
 				 Main.serialPort = SerialTool.openPort(combo_3.getText().toString(), Integer.parseInt(combo.getText().toString()));
-				  SerialTool.addListener(Main.serialPort, new SerialListener(Main.serialPort));
+				 Main.serialPort.setSerialPortParams(Integer.parseInt(combo.getText().toString()), Integer.parseInt(combo_1.getText().toString()), Integer.parseInt(combo_2.getText().toString()), SerialPort.PARITY_NONE);
+				 SerialTool.addListener(Main.serialPort, new SerialListener(Main.serialPort));
+				 System.out.println("shell closed");
+				 getShell().close();
+				 
 			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
