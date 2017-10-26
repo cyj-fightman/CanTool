@@ -10,6 +10,7 @@
 			使用该程序需安装java jdk(开发主机使用的是java jdk 1.8也叫8.0版本)
 			对于端口的使用需要将 rxtxParallel.dll，rxtxSerial.dll 这两个文件复制到 C:\Windows\System32 目录下
 			需要有最初的配置文件，默认放在程序同一个目录下的 database.txt
+			该软件的.exe版本使用exe4j进行转码，因此对于双击之后的第一次框是exe4j的内容，叉掉或点击确定都可以
 			双击运行即可
 程序功能：
 			程序包括读取数据库文件
