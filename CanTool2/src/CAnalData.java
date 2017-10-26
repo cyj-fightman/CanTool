@@ -14,13 +14,10 @@ public class CAnalData extends MAnalData{
 	
 	public void computeData(){
 		char FLAG=datas[0];
-		//	设置ID编号
 		setFLAG(FLAG);
 		String temp="";
 		int    size=0;
-		//	位数的�?�择;
 		switch (FLAG) {
-		//	标准�?;
 		case 't':
 			for(int i=1;i<4;i++){
 				temp+=""+datas[i];
@@ -39,7 +36,6 @@ public class CAnalData extends MAnalData{
 				setDATA(list);
 			}
 			break;
-		//	扩展�?;
 		case 'T':
 			for(int i=1;i<9;i++){
 				temp+=""+datas[i];

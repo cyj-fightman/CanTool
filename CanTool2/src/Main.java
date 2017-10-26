@@ -188,6 +188,7 @@ public class Main extends ApplicationWindow {
             	text_2.getDisplay().asyncExec(new Runnable() {
             		public void run() {
             			if(smart_send_data!=null){
+//            				text.setText("");
                       		 text.setText(smart_send_data);
                       		 smart_send_data=null;
                       	 }
@@ -211,10 +212,10 @@ public class Main extends ApplicationWindow {
 			                    	text_2.getDisplay().asyncExec(new Runnable() {
 			                         @Override
 			                         public void run() {
-			                        	 if(smart_send_data!=null){
-			                        		 text.setText(smart_send_data);
-			                        		 smart_send_data=null;
-			                        	 }
+//			                        	 if(smart_send_data!=null){
+//			                        		 text.setText(smart_send_data);
+//			                        		 smart_send_data=null;
+//			                        	 }
 			                       if(SerialListener.receive_data!=null){
 			                    	   receive_data_buffer.append(SerialListener.receive_data+"\r\n");
 			//                    	   String str="t12380011121314151617\t";
