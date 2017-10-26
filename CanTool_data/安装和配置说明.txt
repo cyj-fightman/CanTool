@@ -5,7 +5,9 @@
 			程序需要将rxtxParallel.dll，rxtxSerial.dll 这两个文件复制到 C:\Windows\System32 目录下
 			程序virtual Serial Port Driver 6.9模拟出两个端口通信，默认本程序端口COM3,对方端口COM2
 			程序使用友善串口调试助手模拟对方端口，也是模拟CanTool装置
-			
+			serial_port_utility_latest.exe是友善串口调试助手用来模拟Can装置
+			VSPD需要安装用来模拟端口，比如模拟COM2和COM3，开发的软件采用COM3，友善串口调试工具模拟Can装置进行数据传输
+			database.txt放在程序最顶层
 程序使用说明：
 			使用该程序需安装java jdk(开发主机使用的是java jdk 1.8也叫8.0版本)
 			对于端口的使用需要将 rxtxParallel.dll，rxtxSerial.dll 这两个文件复制到 C:\Windows\System32 目录下
