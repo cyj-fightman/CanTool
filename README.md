@@ -5,5 +5,4 @@ The windows app can implement the results of can line's information.
 
 # Cantool_data是安装和配置说明，包括运行程序等所需要的资源
 # Cantool2是源程序的代码
-# Cantool1是先前的试验性程序，可以不考虑看
 >-modified by 陈煌榕
